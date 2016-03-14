@@ -27,7 +27,7 @@
     };
 
     this.trackContainer = function() {
-      document.querySelector(".player-controls__track-container");
+      return document.querySelector(".player-controls__track-container");
     };
 
     this.getTrack = function() {
