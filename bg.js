@@ -5,21 +5,24 @@
 
   var doNotify;
 
+  var action = chrome.browserAction;
+
   chrome.storage.sync.get({
     notify: true
   }, function(items) {
     doNotify = items.notify;
+    updateNotificationStatus(doNotify);
   });
 
   var updateNotificationStatus = function (isEnabled) {
     if (playerTab) {
-      chrome.tabs.sendMessage(playerTab.id, {action: "updateNotification", isEnabled: isEnabled});
+      chrome.tabs.sendMessage(playerTab.id, { action: "updateNotification", isEnabled: isEnabled });
     }
   };
 
   var register = function(request, sender) {
     if (request.action === "register_player") {
-      chrome.pageAction.show(sender.tab.id);
+      if (action.show) action.show(sender.tab.id);
     } else if (request.action === "updateNotification") {
       doNotify = request.isEnabled;
       updateNotificationStatus(doNotify);
@@ -30,7 +33,7 @@
 
   var activatePlayer = function(tab) {
     if (playerTab) {
-      chrome.pageAction.setIcon({tabId: playerTab.id, path: "disabled.png"});
+      action.setIcon({ tabId: playerTab.id, path: "disabled.png" });
       updateNotificationStatus(false);
     }
 
@@ -38,17 +41,16 @@
       playerTab = null;
     } else {
       playerTab = tab;
-      chrome.pageAction.setIcon({tabId: tab.id, path: "enabled.png"});
+      action.setIcon({ tabId: tab.id, path: "enabled.png" });
       updateNotificationStatus(doNotify);
     }
   };
 
-  chrome.pageAction.onClicked.addListener(activatePlayer);
+  action.onClicked.addListener(activatePlayer);
 
   var dispatchCommand = function(command) {
     if (playerTab) {
-      console.log(command);
-      chrome.tabs.sendMessage(playerTab.id, {"action": command});
+      chrome.tabs.sendMessage(playerTab.id, { "action": command });
     }
   };
 
