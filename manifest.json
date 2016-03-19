@@ -3,7 +3,9 @@
   "name": "Яндекс Плеер",
   "description": "Это расширение добавляет глобальные горячие клавиши и трэй нотификацию для Яндекс Музыки и Радио",
   "version": "1.0",
-  "icons": {"128": "icon128.png"},
+  "icons": {
+    "128": "icon128.png"
+  },
   "options_page": "options.html",
 
   "browser_action": {
@@ -21,7 +23,7 @@
         "https://music.yandex.ru/*", "https://music.yandex.by/*", "https://music.yandex.ua/*", "https://music.yandex.kz/*",
         "https://radio.yandex.ru/*", "https://radio.yandex.by/*", "https://radio.yandex.ua/*", "https://radio.yandex.kz/*"
       ],
-      "js": ["content.js", "musicPlayer.js"]
+      "js": ["content.js"]
     }
   ],
 

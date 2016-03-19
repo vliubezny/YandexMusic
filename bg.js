@@ -20,7 +20,7 @@
     }
   };
 
-  var register = function(request, sender) {
+  var handler = function(request, sender) {
     if (request.action === "register_player") {
       if (action.show) action.show(sender.tab.id);
     } else if (request.action === "updateNotification") {
@@ -29,7 +29,7 @@
     }
   };
 
-  chrome.runtime.onMessage.addListener(register);
+  chrome.runtime.onMessage.addListener(handler);
 
   var activatePlayer = function(tab) {
     if (playerTab) {
