@@ -17,7 +17,10 @@
 
   "content_scripts": [
     {
-      "matches": ["https://music.yandex.ru/*", "https://music.yandex.by/*"],
+      "matches": [
+        "https://music.yandex.ru/*", "https://music.yandex.by/*", "https://music.yandex.ua/*", "https://music.yandex.kz/*",
+        "https://radio.yandex.ru/*", "https://radio.yandex.by/*", "https://radio.yandex.ua/*", "https://radio.yandex.kz/*"
+      ],
       "js": ["content.js", "musicPlayer.js"]
     }
   ],
