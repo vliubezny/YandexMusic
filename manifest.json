@@ -1,13 +1,13 @@
 {
   "manifest_version": 2,
-  "name": "Yandex Music Extention",
-  "description": "This extention adds global hotkeys binding and tray notification for Yandex Music service.",
+  "name": "Яндекс Плеер",
+  "description": "Это расширение добавляет глобальные горячие клавиши и трэй нотификацию для Яндекс Музыки и Радио",
   "version": "1.0",
   "icons": {"128": "icon128.png"},
   "options_page": "options.html",
 
   "browser_action": {
-    "default_title": "Yandex Player: enable/disable hotkeys",
+    "default_title": "Яндекс Плеер: включить/выключить горячие клавиши и нотификацию для текущей вкладки",
     "default_icon": "disabled.png"
   },
 
@@ -35,21 +35,21 @@
         "default": "MediaPlayPause"
       },
       "global": true,
-      "description": "Toggle play/pause"
+      "description": "Играть/Пауза"
     },
     "playNext": {
       "suggested_key": {
         "default": "MediaNextTrack"
       },
       "global": true,
-      "description": "Play next track"
+      "description": "Следующий трэк"
     },
     "playPrev": {
       "suggested_key": {
         "default": "MediaPrevTrack"
       },
       "global": true,
-      "description": "Play previous track"
+      "description": "Предыдущий трэк"
     }
   }
 }

@@ -4,10 +4,10 @@
   function save_options() {
     var notify = document.getElementById('notify').checked;
     chrome.storage.sync.set({
-      notify: notify,
+      notify: notify
     }, function() {
       var status = document.getElementById('status');
-      status.textContent = 'Options saved.';
+      status.textContent = 'Настройки сохранены.';
       setTimeout(function() {
         status.textContent = '';
       }, 750);
