@@ -1,28 +1,30 @@
 (function () {
   "use strict";
 
-  function save_options() {
+  function saveOptions() {
     var notify = document.getElementById('notify').checked;
+
+    var settings = {
+      isNotificationEnabled: notify
+    };
+
     chrome.storage.sync.set({
-      notify: notify
+      settings: settings
     }, function() {
       var status = document.getElementById('status');
       status.textContent = 'Настройки сохранены.';
       setTimeout(function() {
         status.textContent = '';
       }, 750);
-      chrome.runtime.sendMessage({action: "updateNotification", isEnabled: notify});
+      chrome.runtime.sendMessage({ action: "updateSettings", settings: settings });
     });
   }
 
-  function restore_options() {
-    chrome.storage.sync.get({
-      notify: true
-    }, function(items) {
-      document.getElementById('notify').checked = items.notify;
+  function restoreOptions() {
+    chrome.storage.sync.get(function(items) {
+      document.getElementById('notify').checked = items.settings.isNotificationEnabled;
     });
   }
-  document.addEventListener('DOMContentLoaded', restore_options);
-  document.getElementById('notify').addEventListener('change',
-  save_options);
+  document.addEventListener('DOMContentLoaded', restoreOptions);
+  document.getElementById('notify').addEventListener('change', saveOptions);
 })();

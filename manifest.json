@@ -8,7 +8,7 @@
   },
   "options_page": "options.html",
 
-  "browser_action": {
+  "page_action": {
     "default_title": "Яндекс Плеер: включить/выключить горячие клавиши и нотификацию для текущей вкладки",
     "default_icon": "disabled.png"
   },
@@ -26,6 +26,8 @@
       "js": ["content.js"]
     }
   ],
+
+  "web_accessible_resources": ["injected.js"],
 
   "permissions": [
     "tabs", "storage"
