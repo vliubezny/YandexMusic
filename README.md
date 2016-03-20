@@ -1,5 +1,5 @@
 # YandexMusic
-This is Chrome extention for [Yandex Music](https://music.yandex.ru) service.
+This is Chrome extension for [Yandex Music](https://music.yandex.ru) and [Yandex Radio](https://radio.yandex.ru) services.
 
 ## What it provides
 * Global hotkeys for play/pause, next and previous track commands.
