@@ -10,7 +10,7 @@
     body {
       background: no-repeat center/50% url(icon.svg);
     }
-    p {
+    .content {
       margin: 0;
       padding: 20px;
     }
@@ -22,13 +22,13 @@
 </head>
 <body>
 
-<p>
+<div class="content">
   <label>
     <input type="checkbox" id="notify">
-    Показывать нотификацию о проигрываемом трэке в трэе.
+    Показывать уведомления о проигрываемом треке в трэе.
   </label>
   <div id="status"></div>
-</p>
+</div>
 
 <script src="options.js"></script>
 </body>
