@@ -9,11 +9,10 @@
   var isActive = false;
 
   var player = null;
-  var wasPlaying = false;
 
   var isControlEnabled = function(control) {
     var controls = player.getControls();
-    return controls[control] === "enabled";
+    return controls[control] === player.CONTROL_ENABLED;
   };
 
   var handlers = {
@@ -106,19 +105,17 @@
     }
 
     player = externalAPI;
-    wasPlaying = player.isPlaying();
-
 
     player.on(player.EVENT_STATE, function() {
-      var isPlaying = player.isPlaying();
-      var progress = player.getProgress();
-      if (isPlaying && !wasPlaying) {
-        var track = progress.position !== null && progress.position === progress.duration ?
-          player.getNextTrack() :
-          player.getCurrentTrack();
+      if (player.isPlaying()) {
+        var track = player.getCurrentTrack();
         showTrack(track);
       }
-      wasPlaying = isPlaying;
+    });
+
+    player.on(player.EVENT_TRACK, function() {
+      var track = player.getCurrentTrack();
+      showTrack(track);
     });
 
     document.addEventListener('player_command_event', function(e) {
