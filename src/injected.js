@@ -47,6 +47,24 @@
     return str.length <= maxLen ? str : str.substring(0, maxLen - 3) + "...";
   };
 
+  var getCoverUrl = function(track) {
+    var urlTemplate = null;
+    if (track.cover) {
+      urlTemplate = track.cover;
+    } else {
+      var source = player.getSourceInfo();
+      if (source.type === "playlist" && source.cover) {
+        urlTemplate = Array.isArray(source.cover)
+          ? source.cover[0]
+          : source.cover;
+      }
+    }
+
+    return urlTemplate
+      ? "https://" + urlTemplate.replace("%%", "80x80")
+      : null;
+  };
+
   var createNotification = function(track) {
     var title = track.title;
     if (track.version && track.version !== "Album Version") {
@@ -60,7 +78,7 @@
 
     var notification = new Notification(truncate(title, maxTitleLength), {
       tag: "newTrack",
-      icon: "https://" + track.cover.replace("%%", "80x80"),
+      icon: getCoverUrl(track),
       body: truncate(body, maxTextLength)
     });
 
@@ -73,14 +91,14 @@
     setTimeout(notification.close.bind(notification), 3000);
   };
 
-  var runIfNotificatioAllowed = function(fun) {
+  var runIfNotificatioAllowed = function(action) {
     if (settings.isNotificationEnabled) {
       if (Notification.permission === 'granted') {
-        fun();
+        action();
       } else if (Notification.permission !== 'denied') {
         Notification.requestPermission(function(permission) {
           if (permission === 'granted') {
-            fun();
+            action();
           }
         });
       }
