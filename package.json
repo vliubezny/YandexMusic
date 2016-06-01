@@ -1,0 +1,23 @@
+{
+  "name": "yandex-music",
+  "version": "1.0.0",
+  "description": "Yandex Music Chrome extension",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vliubezny/YandexMusic.git"
+  },
+  "author": "Vitaliy Liubezny",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vliubezny/YandexMusic/issues"
+  },
+  "homepage": "https://github.com/vliubezny/YandexMusic#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-zip": "^3.2.0"
+  }
+}

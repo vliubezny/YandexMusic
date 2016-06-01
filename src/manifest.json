@@ -4,13 +4,13 @@
   "description": "Это расширение добавляет глобальные горячие клавиши и трэй нотификацию для Яндекс Музыки и Радио",
   "version": "1.0.2",
   "icons": {
-    "128": "icon128.png"
+    "128": "img/icon128.png"
   },
   "options_page": "options.html",
 
   "page_action": {
     "default_title": "Яндекс Плеер: включить/выключить горячие клавиши и уведомления для текущей вкладки",
-    "default_icon": "disabled.png"
+    "default_icon": "img/disabled.png"
   },
 
   "background": {

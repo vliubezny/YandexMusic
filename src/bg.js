@@ -38,7 +38,7 @@
 
   var activatePlayer = function(tab) {
     if (playerTab) {
-      action.setIcon({ tabId: playerTab.id, path: "disabled.png" });
+      action.setIcon({ tabId: playerTab.id, path: "img/disabled.png" });
       updateSettings(false);
     }
 
@@ -46,7 +46,7 @@
       playerTab = null;
     } else {
       playerTab = tab;
-      action.setIcon({ tabId: tab.id, path: "enabled.png" });
+      action.setIcon({ tabId: tab.id, path: "img/enabled.png" });
       updateSettings(true);
     }
   };
