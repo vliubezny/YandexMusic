@@ -18,6 +18,7 @@
   var handlers = {
     "playPause": function() {
       player.togglePause();
+      showTrackOnPlay();
     },
     "playNext": function() {
       if (isControlEnabled("next")) {
@@ -117,6 +118,13 @@
     }
   };
 
+  var showTrackOnPlay = function() {
+    if (player.isPlaying()) {
+      var track = player.getCurrentTrack();
+      showTrack(track);
+    }
+  };
+
   var init = function(externalAPI) {
     if (!externalAPI) {
       throw new Error("externalAPI is not available");
@@ -124,16 +132,9 @@
 
     player = externalAPI;
 
-    player.on(player.EVENT_STATE, function() {
-      if (player.isPlaying()) {
-        var track = player.getCurrentTrack();
-        showTrack(track);
-      }
-    });
-
     player.on(player.EVENT_TRACK, function() {
       var track = player.getCurrentTrack();
-      showTrack(track);
+        showTrack(track);
     });
 
     document.addEventListener('player_command_event', function(e) {
