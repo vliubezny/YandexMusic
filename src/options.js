@@ -1,30 +1,28 @@
 (function () {
   "use strict";
 
-  function saveOptions() {
-    var notify = document.getElementById('notify').checked;
+  const statusEl = document.getElementById("status");
+  const notifyEl = document.getElementById("notify");
 
-    var settings = {
-      isNotificationEnabled: notify
+  function showStatus(status) {
+    statusEl.textContent = status;
+    setTimeout(() => (statusEl.textContent = ""), 750);
+  }
+
+  notifyEl.addEventListener("change", () => {
+    const settings = {
+      isNotificationEnabled: notifyEl.checked,
     };
 
-    chrome.storage.sync.set({
-      settings: settings
-    }, function() {
-      var status = document.getElementById('status');
-      status.textContent = 'Настройки сохранены.';
-      setTimeout(function() {
-        status.textContent = '';
-      }, 750);
-      chrome.runtime.sendMessage({ action: "updateSettings", settings: settings });
+    chrome.storage.sync.set({ settings }, () => {
+      showStatus("Настройки сохранены.");
+      chrome.runtime.sendMessage({ action: "updateSettings", settings });
     });
-  }
+  });
 
-  function restoreOptions() {
-    chrome.storage.sync.get(function(items) {
-      document.getElementById('notify').checked = items.settings.isNotificationEnabled;
+  document.addEventListener("DOMContentLoaded", () => {
+    chrome.storage.sync.get((items) => {
+      notifyEl.checked = items.settings.isNotificationEnabled;
     });
-  }
-  document.addEventListener('DOMContentLoaded', restoreOptions);
-  document.getElementById('notify').addEventListener('change', saveOptions);
+  });
 })();
