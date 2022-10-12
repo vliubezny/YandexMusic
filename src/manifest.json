@@ -50,7 +50,7 @@
     }
   ],
 
-  "permissions": ["storage"],
+  "permissions": ["storage", "declarativeContent"],
 
   "commands": {
     "playPause": {

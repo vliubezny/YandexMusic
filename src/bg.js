@@ -1,6 +1,6 @@
 "use strict";
 
-const { action, commands, runtime, storage, tabs } = chrome;
+const { action, declarativeContent, commands, runtime, storage, tabs } = chrome;
 const DEFAULT_SETTINGS = { isNotificationEnabled: true };
 
 async function setDefaultSettings() {
@@ -94,4 +94,23 @@ tabs.onRemoved.addListener(async (removedTabId) => {
   if (removedTabId === tabId) {
     storage.local.set({ tabId: null, index: null });
   }
+});
+
+runtime.onInstalled.addListener(() => {
+  action.disable();
+
+  declarativeContent.onPageChanged.removeRules(undefined, () => {
+    const rule = {
+      conditions: [
+        new declarativeContent.PageStateMatcher({
+          pageUrl: {
+            urlMatches: "https://(?:music|radio)\\.yandex\\.(?:ru|by|ua|kz)",
+          },
+        }),
+      ],
+      actions: [new declarativeContent.ShowAction()],
+    };
+
+    declarativeContent.onPageChanged.addRules([rule]);
+  });
 });
