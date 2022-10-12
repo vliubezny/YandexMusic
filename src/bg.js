@@ -104,7 +104,7 @@ runtime.onInstalled.addListener(() => {
       conditions: [
         new declarativeContent.PageStateMatcher({
           pageUrl: {
-            urlMatches: "https://(?:music|radio)\\.yandex\\.(?:ru|by|ua|kz)",
+            urlMatches: "https://music\\.yandex\\.(?:ru|by|ua|kz|com)",
           },
         }),
       ],
