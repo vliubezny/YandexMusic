@@ -1,61 +1,97 @@
 "use strict";
 
-let playerTab = null;
+const { action, commands, runtime, storage, tabs } = chrome;
+const DEFAULT_SETTINGS = { isNotificationEnabled: true };
 
-const action = chrome.action;
-
-let settings = {
-  isNotificationEnabled: true,
-};
-
-chrome.storage.sync.get((items) => {
-  if (items.settings) {
-    settings = items.settings;
-  } else {
-    chrome.storage.sync.set({ settings: settings });
+async function setDefaultSettings() {
+  const { settings } = await storage.sync.get(["settings"]);
+  if (!settings) {
+    storage.sync.set({ settings: DEFAULT_SETTINGS });
   }
+}
 
-  updateSettings(true);
-});
+setDefaultSettings();
 
-function updateSettings(isActive) {
-  if (playerTab) {
-    chrome.tabs.sendMessage(playerTab.id, {
+async function updateSettings(tabId, isActive) {
+  if (tabId) {
+    const { settings } = await storage.sync.get(["settings"]);
+    tabs.sendMessage(tabId, {
       action: "updateSettings",
-      settings: settings,
-      isActive: isActive,
+      settings: settings || DEFAULT_SETTINGS,
+      isActive,
     });
   }
 }
 
-chrome.runtime.onMessage.addListener((request, sender) => {
+runtime.onMessage.addListener(async (request, sender) => {
   if (request.action === "register_player") {
-    if (action.show) action.show(sender.tab.id);
+    action.show && action.show(sender.tab.id);
+    retorePlayer(sender.tab);
   } else if (request.action === "updateSettings") {
-    settings = request.settings;
-    updateSettings(true);
+    const { tabId } = await storage.local.get(["tabId"]);
+    updateSettings(tabId, true);
   }
 });
 
-function activatePlayer(tab) {
-  if (playerTab) {
-    action.setIcon({ tabId: playerTab.id, path: "img/disabled.png" });
-    updateSettings(false);
+async function retorePlayer(tab) {
+  const { tabId, index } = await storage.local.get(["tabId", "index"]);
+  if (!tabId) {
+    return;
   }
 
-  if (playerTab && playerTab.id === tab.id) {
-    playerTab = null;
-  } else {
-    playerTab = tab;
-    action.setIcon({ tabId: tab.id, path: "img/enabled.png" });
-    updateSettings(true);
+  if (tabId === tab.id || (!(await isValidTab(tabId)) && index === tab.index)) {
+    activatePlayer(tab.id, tab.index);
   }
 }
 
-action.onClicked.addListener(activatePlayer);
+async function isValidTab(tabId) {
+  try {
+    await tabs.get(tabId);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
 
-chrome.commands.onCommand.addListener((command) => {
-  if (playerTab) {
-    chrome.tabs.sendMessage(playerTab.id, { action: command });
+function activatePlayer(tabId, index) {
+  storage.local.set({ tabId, index });
+  action.setIcon({ tabId, path: "img/enabled.png" });
+  updateSettings(tabId, true);
+}
+
+async function switchPlayer(tab) {
+  const { tabId } = await storage.local.get(["tabId"]);
+  if (tabId) {
+    action.setIcon({ tabId, path: "img/disabled.png" });
+    updateSettings(tabId, false);
+  }
+
+  if (tabId === tab.id) {
+    storage.local.set({ tabId: null });
+  } else {
+    activatePlayer(tab.id, tab.index);
+  }
+}
+
+action.onClicked.addListener(switchPlayer);
+
+commands.onCommand.addListener(async (command) => {
+  const { tabId } = await storage.local.get(["tabId"]);
+  if (tabId) {
+    tabs.sendMessage(tabId, { action: command });
+  }
+});
+
+tabs.onMoved.addListener(async (movedTabId, moveInfo) => {
+  const { tabId } = await storage.local.get(["tabId"]);
+  if (movedTabId === tabId) {
+    storage.local.set({ index: toIndex });
+  }
+});
+
+tabs.onRemoved.addListener(async (removedTabId) => {
+  const { tabId } = await storage.local.get(["tabId"]);
+  if (removedTabId === tabId) {
+    storage.local.set({ tabId: null, index: null });
   }
 });
