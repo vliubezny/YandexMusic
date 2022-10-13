@@ -1,59 +1,59 @@
-(function() {
+(function () {
   "use strict";
 
-  var maxTitleLength = 30,
-    maxTextLength = 35;
+  const MAX_TITLE_LENGTH = 30;
+  const MAX_TEXT_LENGTH = 35;
 
-  var settings = {};
+  let settings = {};
 
-  var isActive = false;
+  let isActive = false;
 
-  var player = null;
+  let player = null;
 
-  var isControlEnabled = function(control) {
+  function isControlEnabled(control) {
     var controls = player.getControls();
     return controls[control] === player.CONTROL_ENABLED;
-  };
+  }
 
-  var handlers = {
-    "playPause": function() {
+  const handlers = {
+    playPause: () => {
       player.togglePause();
       showTrackOnPlay();
     },
-    "playNext": function() {
+    playNext: () => {
       if (isControlEnabled("next")) {
         player.next();
       }
     },
-    "playPrev": function() {
+    playPrev: () => {
       if (isControlEnabled("prev")) {
         player.prev();
       }
     },
-    "updateSettings": function(e) {
+    updateSettings: (e) => {
       settings = e.settings;
       isActive = e.isActive;
-    }
+    },
   };
 
-  var handle = function(request) {
-    var handler = handlers[request.action];
+  function handle(request) {
+    const handler = handlers[request.action];
     if (!handler) {
       console.error("unhandled action", request.action);
     }
     handler(request);
-  };
+  }
 
-  var truncate = function(str, maxLen) {
+  function truncate(str, maxLen) {
     return str.length <= maxLen ? str : str.substring(0, maxLen - 3) + "...";
-  };
+  }
 
-  var getCoverUrl = function(track) {
-    var urlTemplate = null;
+  function getCoverUrl(track) {
+    let urlTemplate = null;
     if (track.cover) {
       urlTemplate = track.cover;
     } else {
-      var source = player.getSourceInfo();
+      const source = player.getSourceInfo();
       if (source.type === "playlist" && source.cover) {
         urlTemplate = Array.isArray(source.cover)
           ? source.cover[0]
@@ -61,87 +61,81 @@
       }
     }
 
-    return urlTemplate
-      ? "https://" + urlTemplate.replace("%%", "80x80")
-      : null;
-  };
+    return urlTemplate ? "https://" + urlTemplate.replace("%%", "80x80") : null;
+  }
 
-  var createNotification = function(track) {
-    var title = track.title;
+  function createNotification(track) {
+    let title = track.title;
     if (track.version && track.version !== "Album Version") {
-      title += " (" + track.version + ")";
+      title += ` (${track.version})`;
     }
 
-    var body = track.artists.map(function(a) { return a.title; }).join(", ");
+    let body = track.artists.map((a) => a.title).join(", ");
     if (track.album) {
-      body += " - " + track.album.title + " (" + track.album.year + ")";
+      body += ` - ${track.album.title} (${track.album.year})`;
     }
 
-    var notification = new Notification(truncate(title, maxTitleLength), {
+    const notification = new Notification(truncate(title, MAX_TITLE_LENGTH), {
       tag: "newTrack",
       icon: getCoverUrl(track),
-      body: truncate(body, maxTextLength)
+      body: truncate(body, MAX_TEXT_LENGTH),
     });
 
-    notification.addEventListener("click", function() {
+    notification.addEventListener("click", () => {
       handle({
-        action: "playNext"
+        action: "playNext",
       });
       notification.close();
     });
     setTimeout(notification.close.bind(notification), 3000);
-  };
+  }
 
-  var runIfNotificatioAllowed = function(action) {
+  function runIfNotificatioAllowed(action) {
     if (settings.isNotificationEnabled) {
-      if (Notification.permission === 'granted') {
+      if (Notification.permission === "granted") {
         action();
-      } else if (Notification.permission !== 'denied') {
-        Notification.requestPermission(function(permission) {
-          if (permission === 'granted') {
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission(function (permission) {
+          if (permission === "granted") {
             action();
           }
         });
       }
     }
-  };
+  }
 
-  var showTrack = function(track) {
+  function showTrack(track) {
     if (!isActive) {
       return;
     }
 
     if (track) {
-      runIfNotificatioAllowed(function() {
-        createNotification(track);
-      });
+      runIfNotificatioAllowed(() => createNotification(track));
     }
-  };
+  }
 
-  var showTrackOnPlay = function() {
+  function showTrackOnPlay() {
     if (player.isPlaying()) {
-      var track = player.getCurrentTrack();
-      showTrack(track);
+      showTrack(player.getCurrentTrack());
     }
-  };
+  }
 
-  var init = function(externalAPI) {
+  function init(externalAPI) {
     if (!externalAPI) {
       throw new Error("externalAPI is not available");
     }
 
     player = externalAPI;
 
-    player.on(player.EVENT_TRACK, function() {
-      var track = player.getCurrentTrack();
-        showTrack(track);
+    player.on(player.EVENT_TRACK, () => {
+      showTrack(player.getCurrentTrack());
     });
 
-    document.addEventListener('player_command_event', function(e) {
+    document.addEventListener("player_command_event", (e) => {
       handle(e.detail);
     });
-    document.dispatchEvent(new CustomEvent('player_ready_event'));
-  };
+    document.dispatchEvent(new CustomEvent("player_ready_event"));
+  }
 
   init(window.externalAPI);
 })();

@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>Настройки Яндекс Плеера</title>
-  <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-    }
-    body {
-      background: no-repeat center/50% url(img/icon.svg);
-    }
-    .content {
-      margin: 0;
-      padding: 20px;
-    }
-    #status {
-      color: green;
-      margin-left: 20px;
-    }
-  </style>
-</head>
-<body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Настройки Яндекс Плеера</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      body {
+        background: no-repeat center/50% url(img/icon.svg);
+      }
+      .content {
+        margin: 0;
+        padding: 20px;
+      }
+      #status {
+        color: green;
+        margin-left: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="content">
+      <label>
+        <input type="checkbox" id="notify" />
+        Показывать уведомления о проигрываемом треке.
+      </label>
+      <div id="status"></div>
+    </div>
 
-<div class="content">
-  <label>
-    <input type="checkbox" id="notify">
-    Показывать уведомления о проигрываемом треке в трэе.
-  </label>
-  <div id="status"></div>
-</div>
-
-<script src="options.js"></script>
-</body>
+    <script src="options.js"></script>
+  </body>
 </html>

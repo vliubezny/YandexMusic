@@ -1,30 +1,30 @@
-(function() {
+(function () {
   "use strict";
 
-  var handle = function(request) {
-    document.dispatchEvent(new CustomEvent('player_command_event', {
-      detail: request
-    }));
-  };
+  const { runtime } = chrome;
 
-  var injectScript = function() {
-    var script = document.createElement('script');
-    script.src = chrome.extension.getURL('injected.js');
-    script.onload = function() {
+  function injectScript() {
+    const script = document.createElement("script");
+    script.src = runtime.getURL("injected.js");
+    script.onload = function () {
       this.parentNode.removeChild(this);
     };
     (document.head || document.documentElement).appendChild(script);
-  };
+  }
 
-  var init = function() {
-    chrome.runtime.onMessage.addListener(handle);
+  function init() {
+    runtime.onMessage.addListener((request) => {
+      document.dispatchEvent(
+        new CustomEvent("player_command_event", { detail: request })
+      );
+    });
 
-    document.addEventListener('player_ready_event', function() {
-      chrome.runtime.sendMessage({ action: "register_player" });
+    document.addEventListener("player_ready_event", () => {
+      runtime.sendMessage({ action: "register_player" });
     });
 
     injectScript();
-  };
+  }
 
   init();
 })();

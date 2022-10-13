@@ -1,37 +1,50 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Яндекс Плеер",
-  "description": "Это расширение добавляет глобальные горячие клавиши и трэй нотификацию для Яндекс Музыки и Радио",
-  "version": "1.0.5",
+  "description": "Это расширение добавляет глобальные горячие клавиши и уведомления о проигрываемом треке для Яндекс Музыки.",
+  "version": "1.0.6",
   "icons": {
     "128": "img/icon128.png"
   },
   "options_page": "options.html",
 
-  "page_action": {
+  "action": {
     "default_title": "Яндекс Плеер: включить/выключить горячие клавиши и уведомления для текущей вкладки",
     "default_icon": "img/disabled.png"
   },
 
   "background": {
-    "scripts": ["bg.js"]
+    "service_worker": "bg.js"
   },
 
   "content_scripts": [
     {
       "matches": [
-        "https://music.yandex.ru/*", "https://music.yandex.by/*", "https://music.yandex.ua/*", "https://music.yandex.kz/*",
-        "https://radio.yandex.ru/*", "https://radio.yandex.by/*", "https://radio.yandex.ua/*", "https://radio.yandex.kz/*"
+        "https://music.yandex.ru/*",
+        "https://music.yandex.by/*",
+        "https://music.yandex.ua/*",
+        "https://music.yandex.kz/*",
+        "https://music.yandex.com/*"
       ],
       "js": ["content.js"]
     }
   ],
 
-  "web_accessible_resources": ["injected.js"],
-
-  "permissions": [
-    "tabs", "storage"
+  "web_accessible_resources": [
+    {
+      "resources": ["injected.js"],
+      "matches": [
+        "https://music.yandex.ru/*",
+        "https://music.yandex.by/*",
+        "https://music.yandex.ua/*",
+        "https://music.yandex.kz/*",
+        "https://music.yandex.com/*"
+      ],
+      "extension_ids": []
+    }
   ],
+
+  "permissions": ["storage", "declarativeContent"],
 
   "commands": {
     "playPause": {

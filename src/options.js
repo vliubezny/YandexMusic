@@ -1,30 +1,28 @@
 (function () {
   "use strict";
 
-  function saveOptions() {
-    var notify = document.getElementById('notify').checked;
+  const { runtime, storage } = chrome;
 
-    var settings = {
-      isNotificationEnabled: notify
+  const statusEl = document.getElementById("status");
+  const notifyEl = document.getElementById("notify");
+
+  function showStatus(status) {
+    statusEl.textContent = status;
+    setTimeout(() => (statusEl.textContent = ""), 750);
+  }
+
+  notifyEl.addEventListener("change", async () => {
+    const settings = {
+      isNotificationEnabled: notifyEl.checked,
     };
 
-    chrome.storage.sync.set({
-      settings: settings
-    }, function() {
-      var status = document.getElementById('status');
-      status.textContent = 'Настройки сохранены.';
-      setTimeout(function() {
-        status.textContent = '';
-      }, 750);
-      chrome.runtime.sendMessage({ action: "updateSettings", settings: settings });
-    });
-  }
+    await storage.sync.set({ settings });
+    showStatus("Настройки сохранены.");
+    runtime.sendMessage({ action: "updateSettings" });
+  });
 
-  function restoreOptions() {
-    chrome.storage.sync.get(function(items) {
-      document.getElementById('notify').checked = items.settings.isNotificationEnabled;
-    });
-  }
-  document.addEventListener('DOMContentLoaded', restoreOptions);
-  document.getElementById('notify').addEventListener('change', saveOptions);
+  document.addEventListener("DOMContentLoaded", async () => {
+    const { settings } = await storage.sync.get(["settings"]);
+    notifyEl.checked = settings.isNotificationEnabled;
+  });
 })();
