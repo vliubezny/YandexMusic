@@ -1,10 +1,10 @@
 {
   "name": "yandex-music",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "Yandex Music Chrome extension",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "gulp"
   },
   "repository": {
     "type": "git",
@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/vliubezny/YandexMusic#readme",
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-zip": "^3.2.0"
+    "gulp": "^4.0.2",
+    "gulp-zip": "^5.1.0"
   }
 }
